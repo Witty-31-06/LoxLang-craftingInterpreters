@@ -11,7 +11,6 @@ import java.util.Map;
 
 import static com.craftinginterpreters.lox.TokenType.*;
 public class Scanner {
-
     private final String source;
     private int start; //Beginning of the lexeme
     private int line; //Line at which current is pointing to
