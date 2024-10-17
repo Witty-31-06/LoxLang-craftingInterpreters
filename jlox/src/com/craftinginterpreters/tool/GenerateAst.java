@@ -12,10 +12,10 @@ public class GenerateAst {
         }
         String outputDir = args[0];
         defineAst(outputDir, "Expr", Arrays.asList(
-                "Binary   : Expr left, Token operator, Expr right",
+                "Binary   : Expr left, Token.java operator, Expr right",
                 "Grouping : Expr expression",
                 "Literal  : Object value",
-                "Unary    : Token operator, Expr right"
+                "Unary    : Token.java operator, Expr right"
         ));
     }
     private static void defineAst(String outputDir,
