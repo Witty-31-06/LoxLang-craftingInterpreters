@@ -1,5 +1,6 @@
 package com.craftinginterpreters.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 import static com.craftinginterpreters.lox.TokenType.*;
 public class Parser {
@@ -9,12 +10,12 @@ public class Parser {
     Parser(List<Token> tokens) {
         this.tokens = tokens;
     }
-    Expr parse() {
-        try {
-            return expression();
-        } catch(ParseError e) {
-            return null;
+    List<Stmt> parse() {
+        List<Stmt> statements = new ArrayList<>();
+        while(!isAtEnd()) {
+            statements.add(statement());
         }
+        return statements;
     }
     private Expr expression() {
         return equality();
@@ -43,7 +44,7 @@ public class Parser {
         Expr expr = factor();
         while(match(MINUS, PLUS)) {
             Token operator = previous();
-            Expr right = term();
+            Expr right = factor();
             expr = new Expr.Binary(expr, operator, right);
         }
         return expr;
@@ -113,6 +114,20 @@ public class Parser {
 
     //Helper functions
 
+    private Stmt statement() {
+        if(match(PRINT)) return printstatement();
+        return exprstatement(); //Expr wrapped inside Stmt
+    }
+    private Stmt exprstatement() {
+        Expr expr = expression();
+        consume(SEMICOLON, "Expect ';' after expression.");
+        return new Stmt.Expression(expr);
+    }
+    private Stmt printstatement() {
+        Expr value = expression();
+        consume(SEMICOLON, "Expect ';' after expression.");
+        return new Stmt.Print(value);
+    }
     /**
      * Checks if the the current token is of any type mentioned in params
      * @param types
